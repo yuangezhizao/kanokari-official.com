@@ -1,0 +1,223 @@
+(function(){
+
+  // ==========================================================
+  // UA
+  // ==========================================================
+  const ua = navigator.userAgent;
+  if((ua.indexOf('Android') > 0 && ua.indexOf('Mobile') == -1) || ua.indexOf('iPad') > 0 || ua.indexOf('Kindle') > 0 || ua.indexOf('Silk') > 0){
+    $("meta[name='viewport']").attr('content', 'width=1300');
+  } else if ((ua.indexOf('Android') > 0 && ua.indexOf('Mobile') > 0) || ua.indexOf('iPhone') > 0 || ua.indexOf('Blackberry') > 0 || ua.indexOf('iPhone') > 0){
+  } else if(navigator.platform == "MacIntel" && navigator.userAgent.indexOf("Safari") != -1 && navigator.userAgent.indexOf("Chrome") == -1) {
+    if (navigator.standalone !== undefined) {
+      // iPad OS Safari
+      $("meta[name='viewport']").attr('content', 'width=1300');
+    } else {
+      // macOS Safari
+    }
+  }
+
+
+  // ==========================================================
+  // Menu Trigger
+  // ==========================================================
+  const _mTrg   = document.querySelector('#MenuTrigger'),
+        _header = document.querySelector('#Head'),
+        _spNav  = document.querySelector('#SpNav');
+  let _menuStatus;
+  _menuStatus = false;
+
+  $(_mTrg).on('click',function(){
+    if(_menuStatus === false){
+      $(_header).addClass('is__menuopened');
+      $(_spNav).slideDown(500);
+      setTimeout(function(){
+        _menuStatus = true;
+      },500);
+    } else {
+      $(_header).removeClass('is__menuopened');
+      $(_spNav).slideUp(500);
+      setTimeout(function(){
+        _menuStatus = false;
+      },500);
+    }
+  });
+
+
+  // ==========================================================
+  // Loaded Event
+  // ==========================================================
+  window.addEventListener('load',function(){
+    if($('body').hasClass('storyStyle')){
+      $('.firsthide').addClass('disnon');
+      $('.storytab-btn:last-child').addClass('is__current');
+    }
+    setTimeout(function(){
+      $('body').animate({
+        'opacity': 1
+      },1000);
+    },1000);
+  });
+
+
+  // ==========================================================
+  // KV切り替え
+  // ==========================================================
+  $('#Kv .kv-wrap__block').on('click',function(){
+    let _thisId      = $(this).attr('id');
+    let _selectedNum = _thisId.slice(2);
+    let _targetKv    = document.querySelector('#Kv' + _selectedNum);
+
+    $('#Kv .kv-wrap__block').removeClass('is__active');
+    $(_targetKv).addClass('is__active');
+  });
+
+
+  // ==========================================================
+  // モーダル／コメント
+  // ==========================================================
+  $('.comment-link').on('click',function(){
+    let _thisId = $(this).attr('id');
+    let _selectedNum = _thisId.slice(12);
+    let _targetModal = document.querySelector('#CommentModal' + _selectedNum);
+    $(_targetModal).fadeIn(400);
+  });
+
+
+  // ==========================================================
+  // モーダル／動画
+  // ==========================================================
+  $('.moviemodal-open').on('click',function(){
+    let _thisDataId = $(this).attr('data-id');
+    $('#MovieModal').fadeIn(400);
+    $('#PlayerPush').append('<iframe width="560" height="315" src="https://www.youtube.com/embed/' + _thisDataId + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
+  });
+
+
+  // ==========================================================
+  // モーダル／閉じる
+  // ==========================================================
+  $('.l-modal .close-btn').on('click',function(){
+    $('.l-modal').fadeOut(300);
+    $('#PlayerPush').html('');
+  });
+
+
+  // ==========================================================
+  // タブ切り替え - 基本
+  // ==========================================================
+  let _tabChangeStatus;
+  _tabChangeStatus = false;
+
+  $('.tab-btn').on('click',function(){
+    let _thisBtn = $(this);
+    $('.tab-btn').removeClass('is__active');
+    if(_tabChangeStatus === false){
+      _tabChangeStatus = true;
+      let _thisId      = $(this).attr('id');
+      let _selectedNum = _thisId.slice(3);
+
+      let _targetBox = document.querySelector('#TabBlock' + _selectedNum);
+
+      $(_thisBtn).addClass('is__active');
+
+      $('.tab-box').stop().fadeOut(300,function(){
+        $(_targetBox).stop().fadeIn(400,function(){
+          _tabChangeStatus = false;
+        });
+      });
+    }
+
+  });
+
+
+  // ==========================================================
+  // あらすじ切り替え
+  // ==========================================================
+  let _storyChangeStatus;
+  _storyChangeStatus = false;
+
+  $('.storytab-btn').on('click',function(){
+    let _thisBtn = $(this);
+    $('.storytab-btn').removeClass('is__current');
+    if(_storyChangeStatus === false){
+      _storyChangeStatus = true;
+      let _thisId      = $(this).attr('id');
+      let _selectedNum = _thisId.slice(5);
+
+      let _targetBox = document.querySelector('#StoryBlock' + _selectedNum);
+
+      $(_thisBtn).addClass('is__current');
+
+      $('.story-main__detail__block').stop().fadeOut(300,function(){
+        $(_targetBox).stop().fadeIn(400,function(){
+          _storyChangeStatus = false;
+        });
+      });
+    }
+
+  });
+
+
+  // ==========================================================
+  // ストーリースライダー
+  // ==========================================================
+  if($('body').hasClass('storyStyle')){
+    const storySlider = new Swiper ('.slider-story', {
+      loop:                false,
+      effect:              'slide',
+      pagination:          '.swiper-pagination',
+      speed:               600,
+      paginationClickable: true,
+      nextButton:          '.swiper-button-next',
+      prevButton:          '.swiper-button-prev',
+    });
+  }
+
+
+  // ==========================================================
+  // キャラクタースライダー
+  // ==========================================================
+  const charaSlider = new Swiper ('.slider-character', {
+    loop:                true,
+    effect:              'fade',
+    paginationClickable: true,
+    autoHeight:          false,
+    pagination:          '.swiper-pagination',
+    // nextButton: '.swiper-button-next',
+    // prevButton: '.swiper-button-prev',
+  });
+
+
+  // ==========================================================
+  // Blu-ray 特典スライダー
+  // ==========================================================
+  const blurayImgSlider = new Swiper ('.slider-tokuten', {
+    loop:          false,
+    effect:        'slide',
+    pagination:    '.swiper-pagination',
+    watchOverflow: true,
+    // nextButton: '.swiper-button-next',
+    // prevButton: '.swiper-button-prev',
+  });
+
+
+  // ==========================================================
+  // Link Scroll Animation
+  // ==========================================================
+  var target = $("html, body");
+  var move = function(targetPos, hash){
+    var _winW = $(window).width();
+    target.animate({scrollTop: targetPos - 50}, 1000, 'easeInOutQuint', function(){
+      //window.location.hash = hash;
+    });
+  };
+  $(document).on("click", 'a[href^="#"]', function(e){
+    e.preventDefault();
+    var target = $(this).attr("href").split('#')[1];
+    if($("#" + target).length > 0){
+      var targetPos = $("#" + target).offset().top;
+      move(targetPos, target);
+    };
+  });
+
+}());
